@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Java Buzz | Premium Modern Coffee & Community</title>
+    <meta name="title" content="Java Buzz - Premium Coffee Shop">
+    <meta name="keywords" content="coffee shop, java buzz, online order, espresso, best coffee, coffee shop near me">
+    <meta name="description"
+        content="Java Buzz: Experience the finest artisanal coffee. Order online, explore our seasonal menu, and find our location with ease.">
+    <meta name="robots" content="index, follow">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary-brown: #3E2723;
+            --sage-green: #689F38;
+            --cream: #FFF8E1;
+            --white: #ffffff;
+            --footer-bg: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--white);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: #f4f4f4;
+            padding: 5px 8%;
+            font-size: 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            color: #666;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: var(--white);
+            border-bottom: 2px solid var(--cream);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--primary-brown);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: var(--sage-green);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-brown);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--sage-green);
+        }
+
+        .cta-btn {
+            background: var(--sage-green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cta-btn:hover {
+            background: var(--primary-brown);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 550px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3)),
+                url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1470') center/cover;
+            display: flex;
+            align-items: center;
+            padding: 0 8%;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 56px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #ddd;
+            max-width: 600px;
+        }
+
+        /* Menu Section (Ubuntu Style Grid) */
+        .section-padding {
+            padding: 60px 8%;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            border-bottom: 2px solid var(--sage-green);
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            border: 1px solid #eee;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            background: #fff;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-brown);
+        }
+
+        .product-card .price {
+            font-weight: bold;
+            color: var(--sage-green);
+            font-size: 20px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* Blog Section */
+        #blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .blog-card {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--sage-green);
+        }
+
+        .blog-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: var(--primary-brown);
+        }
+
+        .blog-card small {
+            color: #888;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Map Section */
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .location-details {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .info-item i {
+            color: var(--sage-green);
+            margin-right: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--footer-bg);
+            color: #bbb;
+            padding: 60px 8% 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h3 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <span><i class="fas fa-user"></i> My Account</span>
+        <span><i class="fas fa-shopping-cart"></i> Basket: $0.00</span>
+    </div>
+
+    <nav>
+        <a href="#" class="logo">JAVA <span>BUZZ</span></a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">Coffee Menu</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#location">Location</a></li>
+        </ul>
+        <button class="cta-btn" onclick="scrollToMenu()">ORDER ONLINE</button>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <h1>JAVA COFFEE<br>REVOLUTION</h1>
+            <p>Sourced ethically, roasted perfectly, and served with love. Experience the premium taste of Java Buzz.
+            </p>
+            <button class="cta-btn" onclick="scrollToMenu()" style="padding: 15px 40px;">EXPLORE MENU</button>
+        </div>
+    </header>
+
+    <section class="section-padding" id="menu">
+        <h2 class="section-title">Our Featured Menu</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400" alt="Espresso">
+                <h3>Bean Cream Coffee</h3>
+                <span class="price">$5.99</span>
+                <button class="cta-btn" onclick="addToCartAlert('Bean Cream Coffee')">ADD TO CART</button>
+            </div>
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400" alt="Latte">
+                <h3>Vittoria Latte</h3>
+                <span class="price">$4.50</span>
+                <button class="cta-btn" onclick="addToCartAlert('Vittoria Latte')">ADD TO CART</button>
+            </div>
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400" alt="Cappuccino">
+                <h3>Normal Cappuccino</h3>
+                <span class="price">$3.99</span>
+                <button class="cta-btn" onclick="addToCartAlert('Normal Cappuccino')">ADD TO CART</button>
+            </div>
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400" alt="Cold Brew">
+                <h3>Black Cold Brew</h3>
+                <span class="price">$6.50</span>
+                <button class="cta-btn" onclick="addToCartAlert('Black Cold Brew')">ADD TO CART</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="blog" style="background-color: #fdfdfd;">
+        <h2 class="section-title">Coffee Knowledge (Blog)</h2>
+        <div id="blog-grid"></div>
+    </section>
+
+    <section class="section-padding" id="location">
+        <h2 class="section-title">Our Location & Directions</h2>
+        <div class="location-details">
+            <div class="info-item"><i class="fas fa-map-marker-alt"></i> 123 Brew St, Coffee City, 5678</div>
+            <div class="info-item"><i class="fas fa-car"></i> <strong>Parking:</strong> Free street parking & rear lot
+                available.</div>
+        </div>
+        <div id="map"></div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>About Java Buzz</h3>
+                <p>Modern coffee lab dedicated to the art of brewing.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p>Email: hello@javabuzz.com</p>
+                <p>Phone: 0321-4507708</p>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 40px; font-size: 12px;">Copyright © 2026 Java Buzz. All Rights
+            Reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // 1. SWEET ALERT FUNCTION
+        function addToCartAlert(name) {
+            Swal.fire({
+                title: 'Added to Cart!',
+                text: name + ' has been added to your basket.',
+                icon: 'success',
+                confirmButtonColor: '#689F38',
+                confirmButtonText: 'Great!',
+                background: '#FFF8E1'
+            });
+        }
+
+        function scrollToMenu() {
+            document.getElementById('menu').scrollIntoView();
+        }
+
+        // 2. DYNAMIC BLOG DATA (JSON Format)
+        const blogData = [
+            { title: "The Perfect Roast", date: "Feb 01", text: "Discover how we roast our beans to perfection." },
+            { title: "Morning Rituals", date: "Feb 03", text: "Why coffee is the best part of the day." },
+            { title: "Espresso vs Filter", date: "Feb 05", text: "Which one suits your taste buds better?" },
+            { title: "Fair Trade", date: "Feb 07", text: "Our commitment to sustainable farming." },
+            { title: "Home Brewing", date: "Feb 10", text: "Make barista-level coffee at home." },
+            { title: "Latte Art", date: "Feb 12", text: "The secrets behind beautiful patterns." },
+            { title: "Health Benefits", date: "Feb 15", text: "Why coffee is good for your mind." },
+            { title: "Cold Brew Science", date: "Feb 18", text: "The slow process of extracting flavor." },
+            { title: "Pastry Pairings", date: "Feb 20", text: "Best snacks for your coffee." },
+            { title: "Meet The Team", date: "Feb 22", text: "The faces behind Java Buzz." }
+        ];
+
+        const blogGrid = document.getElementById('blog-grid');
+        blogData.forEach(post => {
+            blogGrid.innerHTML += `
+                <div class="blog-card">
+                    <small><i class="fas fa-calendar-alt"></i> ${post.date}, 2026</small>
+                    <h3>${post.title}</h3>
+                    <p>${post.text}</p>
+                </div>`;
+        });
+
+        // 3. MAP INITIALIZATION
+        var map = L.map('map').setView([40.7128, -74.0060], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([40.7128, -74.0060]).addTo(map).bindPopup('<b>Java Buzz HQ</b>').openPopup();
+    </script>
+</body>
+
+</html>
