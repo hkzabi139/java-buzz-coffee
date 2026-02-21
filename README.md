@@ -3,8 +3,7 @@
 Java Buzz is a modern, high-conversion coffee shop website designed to provide a seamless experience for coffee lovers. From exploring our artisanal menu to placing online orders, every detail is crafted for coffee enthusiasts.
 
 ## 🚀 Live Demo
-**[PASTE YOUR GITHUB PAGES LINK HERE]**
-*(Example: https://yourusername.github.io/java-buzz-coffee/)*
+(https://hkzabi139.github.io/java-buzz-coffee/)
 
 ---
 
