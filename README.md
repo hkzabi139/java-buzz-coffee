@@ -38,6 +38,6 @@ Java Buzz is a modern, high-conversion coffee shop website designed to provide a
 ---
 
 ## 👨‍💻 Developed By
-- **Username:** [APNA GITHUB USERNAME LIKHEIN]
+- **Username:** hkzabi139
 - **Project Name:** Java Buzz Coffee Lab
 - **Task:** Coffee Shop Web Design Assignment
